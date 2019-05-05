@@ -15,6 +15,8 @@ import com.example.admin.demomyvietnam.entity.dacsan;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class DacsanAdapter extends RecyclerView.Adapter<DacsanAdapter.holder> {
     private Context context;
     private List<dacsan> dacsanList;
@@ -36,7 +38,6 @@ public class DacsanAdapter extends RecyclerView.Adapter<DacsanAdapter.holder> {
         dacsan ds=dacsanList.get(position);
         Glide.with(context).load(ds.getHinh()).into(holder.hinh);
         holder.ten.setText(ds.getTen());
-        holder.gia.setText(ds.getGia());
     }
 
     @Override
@@ -55,7 +56,7 @@ public class DacsanAdapter extends RecyclerView.Adapter<DacsanAdapter.holder> {
             super(itemView);
             hinh=itemView.findViewById(R.id.hinh_mon);
             ten=itemView.findViewById(R.id.ten_mon);
-            gia=itemView.findViewById(R.id.gia_mon);
+
         }
     }
 }

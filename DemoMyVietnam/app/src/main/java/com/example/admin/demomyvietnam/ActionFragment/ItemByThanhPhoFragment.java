@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.example.admin.demomyvietnam.entity.diadanh;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -38,8 +40,9 @@ public class ItemByThanhPhoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_item_by_thanh_pho, container, false);
 
+        getActivity(). getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        View view=inflater.inflate(R.layout.fragment_item_by_thanh_pho, container, false);
         // Inflate the layout for this fragment
         recyclerView=(RecyclerView) view.findViewById(R.id.id_) ;
         recyclerView.setHasFixedSize(true);
@@ -53,10 +56,6 @@ public class ItemByThanhPhoFragment extends Fragment {
         diadanhList=db.getDiadanh(String.valueOf(key));
         adapter=new ItemByThanhPhoAdapter(diadanhList,getContext());
         recyclerView.setAdapter(adapter);
-        setFullscreen();
-        if (Build.VERSION.SDK_INT > 10) {
-
-        }
         return view;
     }
 

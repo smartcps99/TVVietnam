@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <gradient
-        android:startColor="#ffffff"
-        android:endColor="#eaeaea"
-        android:angle="-90"
-        />
-    <stroke
-        android:color="#ededed"
-        android:width="@dimen/_1sdp"/>
-    <corners android:radius="@dimen/_4sdp"/>
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <!-- set the shadow color here -->
+            <stroke
+                android:width="1dp"
+                android:color="#77CE0101" />
+
+            <!-- setting the thickness of shadow (positive value will give shadow on that side) -->
+
+
+            <corners android:radius="@dimen/_10sdp" />
+        </shape>
+    </item>
+
+    <item android:top="-8dp" android:left="-8dp" android:right="-8dp">
+
+        <shape>
+            <solid android:color="#FFFFFF"/>
+            <stroke android:color="#C9C9C9" android:width="1dp"/>
+            />
+        </shape>
+    </item>
+    <item android:drawable="?attr/selectableItemBackground"/>
+</layer-list>

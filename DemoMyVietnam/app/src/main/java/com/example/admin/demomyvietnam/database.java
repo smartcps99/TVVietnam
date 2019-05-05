@@ -14,6 +14,7 @@ import com.example.admin.demomyvietnam.entity.camnang;
 import com.example.admin.demomyvietnam.entity.dacsan;
 import com.example.admin.demomyvietnam.entity.diadanh;
 import com.example.admin.demomyvietnam.entity.hinhanh;
+import com.example.admin.demomyvietnam.entity.noitro;
 import com.example.admin.demomyvietnam.entity.thanhpho;
 
 import java.io.File;
@@ -35,27 +36,29 @@ public class database extends SQLiteOpenHelper {
     @SuppressLint("SdCardPath")
     public database(Context context) {
         super(context, DB_NAME, null, 1);
+
         if(Build.VERSION.SDK_INT>17){
             PATH=context.getApplicationInfo().dataDir+"/databases/";
+            Log.d("thiennu","API>17");
         }else {
             PATH="/data/data/"+context.getPackageName()+"/databases/";
+            Log.d("thiennu","API<17");
+
         }
         mcontext=context;
     }
     public boolean checkdb(){
         SQLiteDatabase db=null;
         try{
-
             String path=PATH+DB_NAME;
             db=SQLiteDatabase.openDatabase(path,null,SQLiteDatabase.OPEN_READWRITE);
-
-
         }catch (Exception e){
-            Log.d("123zx","Lỗi kìa"+e);
+            Log.d("thiennu","Lỗi kìa"+e);
 
         }
         if(db!=null)
             db.close();
+
         return db!=null?true:false;
     }
     public void CoppyDB(){
@@ -69,7 +72,6 @@ public class database extends SQLiteOpenHelper {
             int legth;
             while ((legth=myin.read(buffer))>0){
                 myout.write(buffer,0,legth);
-
             }
 
             myout.flush();
@@ -81,14 +83,19 @@ public class database extends SQLiteOpenHelper {
         }
 
     }
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+//        db.disableWriteAheadLogging();
+    }
     public void OpenDB(){
         String path=PATH+DB_NAME;
         SQLiteDatabase .openDatabase(path,null,SQLiteDatabase.OPEN_READWRITE);
     }
     public void createdb(){
-        boolean check=checkdb();
+//        this.getReadableDatabase();
+        this.close();
         if(checkdb()){
-
 
         }else {
             this.getWritableDatabase();
@@ -258,7 +265,7 @@ public class database extends SQLiteOpenHelper {
         List<dacsan> dacsans=new ArrayList<>();
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor c;
-        c=db.rawQuery("SELECT * FROM AMTHUC WHERE iddiadanh ='"+id+"'",null);
+        c=db.rawQuery("SELECT * FROM AMTHUC WHERE iddiadiem ='"+id+"'",null);
         if(c.getCount()<=0){
 
         }else {
@@ -276,6 +283,29 @@ public class database extends SQLiteOpenHelper {
         Log.d(TAG, "getDiadanh: "+dacsans.size());
         }
         return dacsans;
+    }
+
+    public List<noitro> getNoitrobyid(String id) {
+        List<noitro> ds=new ArrayList<>();
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor c;
+        c=db.rawQuery("SELECT * FROM NOITRO WHERE iddiadiem ='"+id+"'",null);
+        if(c.getCount()<=0){
+
+        }else {
+            c.moveToFirst();
+            do{
+                //add data :v
+                int ids=c.getInt(c.getColumnIndex("matro"));
+                String ten=c.getString(c.getColumnIndex("tentro"));
+                String gia=c.getString(c.getColumnIndex("gia"));
+                String diachi=c.getString(c.getColumnIndex("diachi"));
+                ds.add(new noitro(ids,ten,gia,diachi));
+
+            }while (c.moveToNext());
+            c.close();
+        }
+        return ds;
     }
 
     public List<camnang> getcamnang() {
@@ -300,4 +330,5 @@ public class database extends SQLiteOpenHelper {
         }
         return camnangs;
     }
+
 }

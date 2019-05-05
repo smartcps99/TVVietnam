@@ -41,6 +41,7 @@ public class CamnangAdapter extends RecyclerView.Adapter<CamnangAdapter.holder> 
         holder.ten.setText(cn.getTen());
         holder.demo.setText(cn.getNoidung());
         holder.itemView.setBackgroundColor(getRandomColorCode());
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,7 +57,6 @@ public class CamnangAdapter extends RecyclerView.Adapter<CamnangAdapter.holder> 
     public int getRandomColorCode(){
 
         Random random = new Random();
-
         return Color.argb(255, random.nextInt(256), random.nextInt(256),     random.nextInt(256));
 
     }
