@@ -1,6 +1,7 @@
 package com.example.admin.demomyvietnam;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,6 +16,7 @@ import com.example.admin.demomyvietnam.entity.dacsan;
 import com.example.admin.demomyvietnam.entity.diadanh;
 import com.example.admin.demomyvietnam.entity.hinhanh;
 import com.example.admin.demomyvietnam.entity.thanhpho;
+import com.example.admin.demomyvietnam.entity.yeuthich;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,48 +29,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class database extends SQLiteOpenHelper {
-    private String PATH="";
-    private static String DB_NAME="Mvietnam.db";
-    private Context mcontext=null;
-    private final String TAG="MYVIETNAM22";
+    private String PATH = "";
+    private static String DB_NAME = "Mvietnam.db";
+    private Context mcontext = null;
+    private final String TAG = "MYVIETNAM22";
+    private static final String LIKEID = "likeid";
+    private static String TB_NAME = "YEUTHICH";
 
     @SuppressLint("SdCardPath")
     public database(Context context) {
         super(context, DB_NAME, null, 1);
-        if(Build.VERSION.SDK_INT>17){
-            PATH=context.getApplicationInfo().dataDir+"/databases/";
-        }else {
-            PATH="/data/data/"+context.getPackageName()+"/databases/";
+        if (Build.VERSION.SDK_INT > 17) {
+            PATH = context.getApplicationInfo().dataDir + "/databases/";
+        } else {
+            PATH = "/data/data/" + context.getPackageName() + "/databases/";
         }
-        mcontext=context;
+        mcontext = context;
     }
-    public boolean checkdb(){
-        SQLiteDatabase db=null;
-        try{
 
-            String path=PATH+DB_NAME;
-            db=SQLiteDatabase.openDatabase(path,null,SQLiteDatabase.OPEN_READWRITE);
+    public boolean checkdb() {
+        SQLiteDatabase db = null;
+        try {
+
+            String path = PATH + DB_NAME;
+            db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE);
 
 
-        }catch (Exception e){
-            Log.d("123zx","Lỗi kìa"+e);
+        } catch (Exception e) {
+            Log.d("123zx", "Lỗi kìa" + e);
 
         }
-        if(db!=null)
+        if (db != null)
             db.close();
-        return db!=null?true:false;
+        return db != null ? true : false;
     }
-    public void CoppyDB(){
+
+    public void CoppyDB() {
 
         try {
-            InputStream myin=mcontext.getAssets().open(DB_NAME);
-            String outputfile=PATH+DB_NAME;
-            OutputStream myout= new FileOutputStream(outputfile);
+            InputStream myin = mcontext.getAssets().open(DB_NAME);
+            String outputfile = PATH + DB_NAME;
+            OutputStream myout = new FileOutputStream(outputfile);
 
-            byte [] buffer=new byte[1024];
+            byte[] buffer = new byte[1024];
             int legth;
-            while ((legth=myin.read(buffer))>0){
-                myout.write(buffer,0,legth);
+            while ((legth = myin.read(buffer)) > 0) {
+                myout.write(buffer, 0, legth);
 
             }
 
@@ -81,152 +87,152 @@ public class database extends SQLiteOpenHelper {
         }
 
     }
-    public void OpenDB(){
-        String path=PATH+DB_NAME;
-        SQLiteDatabase .openDatabase(path,null,SQLiteDatabase.OPEN_READWRITE);
+
+    public void OpenDB() {
+        String path = PATH + DB_NAME;
+        SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE);
     }
-    public void createdb(){
-        boolean check=checkdb();
-        if(checkdb()){
+
+    public void createdb() {
+        boolean check = checkdb();
+        if (checkdb()) {
 
 
-        }else {
+        } else {
             this.getWritableDatabase();
             CoppyDB();
         }
     }
 
     public List<hinhanh> getHinhanh(String idbydiadanh) {
-        List<hinhanh> ha=new ArrayList<>();
-       SQLiteDatabase db=this.getWritableDatabase();
-       Cursor c;
-        c=db.rawQuery("SELECT * FROM HINHANH WHERE iddiadanh ='"+idbydiadanh+"'",null);
-        if(c.getCount()<=0){
+        List<hinhanh> ha = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c;
+        c = db.rawQuery("SELECT * FROM HINHANH WHERE iddiadanh ='" + idbydiadanh + "'", null);
+        if (c.getCount() <= 0) {
 
-        }else {
-        c.moveToFirst();
-        do{
-        //add data :v
-            int id=c.getInt(c.getColumnIndex("idhinhanh"));
-            int iddiadanh=c.getInt(c.getColumnIndex("iddiadanh"));
-            byte [] hinh=c.getBlob(c.getColumnIndex("hinhanh"));
-            ha.add(new hinhanh(id,iddiadanh,hinh));
-        }while (c.moveToNext());
-        c.close();
-        Log.d(TAG, "getHinhanh: lll "+ha.size());
+        } else {
+            c.moveToFirst();
+            do {
+                //add data :v
+                int id = c.getInt(c.getColumnIndex("idhinhanh"));
+                int iddiadanh = c.getInt(c.getColumnIndex("iddiadanh"));
+                byte[] hinh = c.getBlob(c.getColumnIndex("hinhanh"));
+                ha.add(new hinhanh(id, iddiadanh, hinh));
+            } while (c.moveToNext());
+            c.close();
+            Log.d(TAG, "getHinhanh: lll " + ha.size());
         }
         return ha;
     }
-    public List<diadanh> getDiadanh(String idbythanhpho){
-        List<diadanh> diadanhList=new ArrayList<>();
-        SQLiteDatabase db=this.getWritableDatabase();
+
+    public List<diadanh> getDiadanh(String idbythanhpho) {
+        List<diadanh> diadanhList = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor c;
-        c=db.rawQuery("SELECT * FROM DIADANH WHERE idthanhpho ='"+idbythanhpho+"'",null);
-        if(c.getCount()<=0){
+        c = db.rawQuery("SELECT * FROM DIADANH WHERE idthanhpho ='" + idbythanhpho + "'", null);
+        if (c.getCount() <= 0) {
 
-        }else {
-        c.moveToFirst();
-        do{
-             //add data :v
-             int id=c.getInt(c.getColumnIndex("iddiadanh"));
-             int idthanhpho=c.getInt(c.getColumnIndex("idthanhpho"));
-             String ten=c.getString(c.getColumnIndex("tendiadanh"));
-             String mota=c.getString(c.getColumnIndex("motadiadanh"));
-             String loai=c.getString(c.getColumnIndex("loaidiadanh"));
-             String giave=c.getString(c.getColumnIndex("giave"));
-             String ngaymocua=c.getString(c.getColumnIndex("ngaymocua"));
-             String giomocua=c.getString(c.getColumnIndex("giomocua"));
-            List<hinhanh> hinhanhList =getHinhanh(String.valueOf(id));
-             diadanhList.add(new diadanh(id,idthanhpho,ten,mota,loai,giave,ngaymocua,giomocua,hinhanhList));
+        } else {
+            c.moveToFirst();
+            do {
+                //add data :v
+                int id = c.getInt(c.getColumnIndex("iddiadanh"));
+                int idthanhpho = c.getInt(c.getColumnIndex("idthanhpho"));
+                String ten = c.getString(c.getColumnIndex("tendiadanh"));
+                String mota = c.getString(c.getColumnIndex("motadiadanh"));
+                String loai = c.getString(c.getColumnIndex("loaidiadanh"));
+                String giave = c.getString(c.getColumnIndex("giave"));
+                String ngaymocua = c.getString(c.getColumnIndex("ngaymocua"));
+                String giomocua = c.getString(c.getColumnIndex("giomocua"));
+                List<hinhanh> hinhanhList = getHinhanh(String.valueOf(id));
+                diadanhList.add(new diadanh(id, idthanhpho, ten, mota, loai, giave, ngaymocua, giomocua, hinhanhList));
 
-        }while (c.moveToNext());
-        c.close();
-        Log.d(TAG, "getDiadanh: "+diadanhList.size());
+            } while (c.moveToNext());
+            c.close();
+            Log.d(TAG, "getDiadanh: " + diadanhList.size());
         }
         return diadanhList;
 
     }
-    public List<diadanh> getDiadanhByid(String ids){
-        List<diadanh> diadanhList=new ArrayList<>();
-        SQLiteDatabase db=this.getWritableDatabase();
+
+    public List<diadanh> getDiadanhByid(String ids) {
+        List<diadanh> diadanhList = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor c;
 
-        c=db.rawQuery("SELECT * FROM DIADANH WHERE iddiadanh ='"+ids+"'",null);
-        if(c.getCount()<=0){
+        c = db.rawQuery("SELECT * FROM DIADANH WHERE iddiadanh ='" + ids + "'", null);
+        if (c.getCount() <= 0) {
 
-        }else {
-        c.moveToFirst();
+        } else {
+            c.moveToFirst();
 
-        do{
-            //add data :v
-            int id=c.getInt(c.getColumnIndex("iddiadanh"));
-            int idthanhpho=c.getInt(c.getColumnIndex("idthanhpho"));
-            String ten=c.getString(c.getColumnIndex("tendiadanh"));
-            String mota=c.getString(c.getColumnIndex("motadiadanh"));
-            String loai=c.getString(c.getColumnIndex("loaidiadanh"));
-            String giave=c.getString(c.getColumnIndex("giave"));
-            String ngaymocua=c.getString(c.getColumnIndex("ngaymocua"));
-            String giomocua=c.getString(c.getColumnIndex("giomocua"));
-            List<hinhanh> hinhanhList =getHinhanh(String.valueOf(id));
-            diadanhList.add(new diadanh(id,idthanhpho,ten,mota,loai,giave,ngaymocua,giomocua,hinhanhList));
+            do {
+                //add data :v
+                int id = c.getInt(c.getColumnIndex("iddiadanh"));
+                int idthanhpho = c.getInt(c.getColumnIndex("idthanhpho"));
+                String ten = c.getString(c.getColumnIndex("tendiadanh"));
+                String mota = c.getString(c.getColumnIndex("motadiadanh"));
+                String loai = c.getString(c.getColumnIndex("loaidiadanh"));
+                String giave = c.getString(c.getColumnIndex("giave"));
+                String ngaymocua = c.getString(c.getColumnIndex("ngaymocua"));
+                String giomocua = c.getString(c.getColumnIndex("giomocua"));
+                List<hinhanh> hinhanhList = getHinhanh(String.valueOf(id));
+                diadanhList.add(new diadanh(id, idthanhpho, ten, mota, loai, giave, ngaymocua, giomocua, hinhanhList));
 
-        }while (c.moveToNext());
-        c.close();
-        Log.d(TAG, "getDiadanh: "+diadanhList.size());
+            } while (c.moveToNext());
+            c.close();
+            Log.d(TAG, "getDiadanh: " + diadanhList.size());
         }
         return diadanhList;
 
     }
-    public int getLong( Cursor cursor, int columnIndex )
-    {
+
+    public int getLong(Cursor cursor, int columnIndex) {
         int value = 0;
 
-        try
-        {
-            if ( !cursor.isNull( columnIndex ) )
-            {
-                Log.d(TAG, "getLong " + columnIndex );
-                value = cursor.getInt( columnIndex );
+        try {
+            if (!cursor.isNull(columnIndex)) {
+                Log.d(TAG, "getLong " + columnIndex);
+                value = cursor.getInt(columnIndex);
             }
-        }
-        catch ( Throwable tr )
-        {
-            Log.d(TAG, "getLong " + columnIndex, tr );
+        } catch (Throwable tr) {
+            Log.d(TAG, "getLong " + columnIndex, tr);
         }
 
         return value;
     }
 
-    public List<thanhpho> getThanhPho(){
+    public List<thanhpho> getThanhPho() {
 
-        List<thanhpho> tplist=new ArrayList<>();
-        SQLiteDatabase db=this.getWritableDatabase();
+        List<thanhpho> tplist = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor c;
-        c=db.rawQuery("SELECT * FROM THANHPHO",null);
-        if(c.getCount()<=0){
+        c = db.rawQuery("SELECT * FROM THANHPHO", null);
+        if (c.getCount() <= 0) {
 
-        }else {
-        c.moveToFirst();
-        do{
-            int id=c.getInt(c.getColumnIndex("idthanhpho"));
-            String ten=c.getString(c.getColumnIndex("tenthanhpho"));
-            byte[] blob=c.getBlob(c.getColumnIndex("hinhanh"));
-            thanhpho tp=new thanhpho(id,ten,blob);
-            //add data :v
-            tplist.add(tp);
-            blob=null;
+        } else {
+            c.moveToFirst();
+            do {
+                int id = c.getInt(c.getColumnIndex("idthanhpho"));
+                String ten = c.getString(c.getColumnIndex("tenthanhpho"));
+                byte[] blob = c.getBlob(c.getColumnIndex("hinhanh"));
+                thanhpho tp = new thanhpho(id, ten, blob);
+                //add data :v
+                tplist.add(tp);
+                blob = null;
 
 
-        }while (c.moveToNext());
-        c.close();
+            } while (c.moveToNext());
+            c.close();
         }
 
         return tplist;
     }
 
-    private byte[] ConvertBlobToByte(Blob blob){
+    private byte[] ConvertBlobToByte(Blob blob) {
         int blobLength = 0;
-        byte[] blobAsBytes=null;
+        byte[] blobAsBytes = null;
         try {
             blobLength = (int) blob.length();
             blobAsBytes = blob.getBytes(1, blobLength);
@@ -236,7 +242,7 @@ public class database extends SQLiteOpenHelper {
             e.printStackTrace();
         }
 
-       return blobAsBytes;
+        return blobAsBytes;
     }
 
     @Override
@@ -255,49 +261,81 @@ public class database extends SQLiteOpenHelper {
     }
 
     public List<dacsan> getDacsanbyid(String id) {
-        List<dacsan> dacsans=new ArrayList<>();
-        SQLiteDatabase db=this.getWritableDatabase();
+        List<dacsan> dacsans = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor c;
-        c=db.rawQuery("SELECT * FROM AMTHUC WHERE iddiadanh ='"+id+"'",null);
-        if(c.getCount()<=0){
+        c = db.rawQuery("SELECT * FROM AMTHUC WHERE iddiadanh ='" + id + "'", null);
+        if (c.getCount() <= 0) {
 
-        }else {
-        c.moveToFirst();
-        do{
-            //add data :v
-            int ids=c.getInt(c.getColumnIndex("idmonan"));
-            String ten=c.getString(c.getColumnIndex("tenmonan"));
-            String gia=c.getString(c.getColumnIndex("giamonan"));
-            byte [] hinh=c.getBlob(c.getColumnIndex("hinhanh"));
-            dacsans.add(new dacsan(ids,ten,gia,hinh));
+        } else {
+            c.moveToFirst();
+            do {
+                //add data :v
+                int ids = c.getInt(c.getColumnIndex("idmonan"));
+                String ten = c.getString(c.getColumnIndex("tenmonan"));
+                String gia = c.getString(c.getColumnIndex("giamonan"));
+                byte[] hinh = c.getBlob(c.getColumnIndex("hinhanh"));
+                dacsans.add(new dacsan(ids, ten, gia, hinh));
 
-        }while (c.moveToNext());
-        c.close();
-        Log.d(TAG, "getDiadanh: "+dacsans.size());
+            } while (c.moveToNext());
+            c.close();
+            Log.d(TAG, "getDiadanh: " + dacsans.size());
         }
         return dacsans;
     }
 
     public List<camnang> getcamnang() {
-        List<camnang> camnangs=new ArrayList<>();
-        SQLiteDatabase db=this.getWritableDatabase();
+        List<camnang> camnangs = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor c;
-        c=db.rawQuery("SELECT * FROM CAMNANG",null);
-        if(c.getCount()<=0){
+        c = db.rawQuery("SELECT * FROM CAMNANG", null);
+        if (c.getCount() <= 0) {
 
-        }else {
+        } else {
             c.moveToFirst();
-            do{
+            do {
                 //add data :v
-                int ids=c.getInt(c.getColumnIndex("idcamnang"));
-                String ten=c.getString(c.getColumnIndex("tencamnang"));
-                String noidung=c.getString(c.getColumnIndex("noidung"));
-                camnangs.add(new camnang(ids,ten,noidung));
+                int ids = c.getInt(c.getColumnIndex("idcamnang"));
+                String ten = c.getString(c.getColumnIndex("tencamnang"));
+                String noidung = c.getString(c.getColumnIndex("noidung"));
+                camnangs.add(new camnang(ids, ten, noidung));
 
-            }while (c.moveToNext());
+            } while (c.moveToNext());
             c.close();
-            Log.d(TAG, "getDiadanh: "+camnangs.size());
+            Log.d(TAG, "getDiadanh: " + camnangs.size());
         }
         return camnangs;
+    }
+
+    // add like
+    public void insertLike(String yeuthich) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        //values.put(column_name,value).
+        values.put(LIKEID, yeuthich);
+        database.insert(TB_NAME, null, values);
+        database.close();
+        Log.d(TAG, "insertLike: successfully!");
+    }
+    public List<yeuthich> getYeuThich(){
+        List<yeuthich> yeuthichlist = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c;
+        c = db.rawQuery("SELECT * FROM YEUTHICH", null);
+        if (c.getCount() <= 0) {
+
+        } else {
+            c.moveToFirst();
+            do {
+                //add data :v
+                int id = c.getInt(c.getColumnIndex("id"));
+                String  likeid = c.getString(c.getColumnIndex("likeid"));
+                yeuthichlist.add(new yeuthich(id,likeid));
+
+            } while (c.moveToNext());
+            c.close();
+            Log.d(TAG, "getYeuThich: " + yeuthichlist.size());
+        }
+        return yeuthichlist;
     }
 }

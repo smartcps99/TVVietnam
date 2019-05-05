@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.admin.demomyvietnam.DiadanhActivity;
 import com.example.admin.demomyvietnam.R;
+import com.example.admin.demomyvietnam.database;
 import com.example.admin.demomyvietnam.entity.diadanh;
 import com.example.admin.demomyvietnam.entity.hinhanh;
 
@@ -23,10 +24,12 @@ import java.util.List;
 public class ItemByThanhPhoAdapter extends RecyclerView.Adapter<ItemByThanhPhoAdapter.viewHolder> {
     private List<diadanh> diadanhList;
     private Context context;
+    com.example.admin.demomyvietnam.database database;
 
     public ItemByThanhPhoAdapter(List<diadanh> diadanhList, Context context) {
         this.diadanhList = diadanhList;
         this.context = context;
+        database = new database(context);
     }
 
     @Override
@@ -38,7 +41,7 @@ public class ItemByThanhPhoAdapter extends RecyclerView.Adapter<ItemByThanhPhoAd
     @Override
     public void onBindViewHolder(@NonNull ItemByThanhPhoAdapter.viewHolder holder, int position) {
         final diadanh ds=diadanhList.get(position);
-        hinhanh ha=ds.getHinhanhList().get(2);
+        final hinhanh ha=ds.getHinhanhList().get(2);
         Log.d("hihihi", String.valueOf(ds.getHinhanhList().size()));
         Glide.with(context).load(ha.getHinhanh()).into(holder.hinhanh);
         holder.ten.setText(ds.getTen());
@@ -54,6 +57,15 @@ public class ItemByThanhPhoAdapter extends RecyclerView.Adapter<ItemByThanhPhoAd
                 Intent intent=new Intent(context, DiadanhActivity.class);
                 intent.putExtra("id",String.valueOf(ds.getId()));
                 context.startActivity(intent);
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                database.insertLike(String.valueOf(ha.getIdbydiadanh()));
+                Toast.makeText(context, "successsave", Toast.LENGTH_SHORT).show();
+                return false;
             }
         });
     }
