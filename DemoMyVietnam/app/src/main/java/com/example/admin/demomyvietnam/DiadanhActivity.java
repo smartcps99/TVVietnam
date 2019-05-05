@@ -44,8 +44,6 @@ public class DiadanhActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         setContentView(R.layout.activity_diadanh);
         anhxa();
         getdata();

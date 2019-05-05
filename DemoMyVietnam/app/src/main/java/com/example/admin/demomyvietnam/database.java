@@ -15,6 +15,7 @@ import com.example.admin.demomyvietnam.entity.camnang;
 import com.example.admin.demomyvietnam.entity.dacsan;
 import com.example.admin.demomyvietnam.entity.diadanh;
 import com.example.admin.demomyvietnam.entity.hinhanh;
+import com.example.admin.demomyvietnam.entity.noitro;
 import com.example.admin.demomyvietnam.entity.thanhpho;
 import com.example.admin.demomyvietnam.entity.yeuthich;
 
@@ -264,7 +265,7 @@ public class database extends SQLiteOpenHelper {
         List<dacsan> dacsans = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor c;
-        c = db.rawQuery("SELECT * FROM AMTHUC WHERE iddiadanh ='" + id + "'", null);
+        c = db.rawQuery("SELECT * FROM AMTHUC WHERE iddiadiem ='" + id + "'", null);
         if (c.getCount() <= 0) {
 
         } else {
@@ -340,5 +341,64 @@ public class database extends SQLiteOpenHelper {
     }
     public void removeYeuThich(){
         
+    }
+
+    public List<noitro> getNoitrobyid(String id) {
+
+
+        List<noitro> ds = new ArrayList<>();
+
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+
+        Cursor c;
+
+
+        c = db.rawQuery("SELECT * FROM NOITRO WHERE iddiadiem ='" + id + "'", null);
+
+
+        if (c.getCount() <= 0) {
+
+
+        } else {
+
+
+            c.moveToFirst();
+
+
+            do {
+
+
+                //add data :v
+
+                int ids = c.getInt(c.getColumnIndex("matro"));
+
+
+                String ten = c.getString(c.getColumnIndex("tentro"));
+
+
+                String gia = c.getString(c.getColumnIndex("gia"));
+
+
+                String diachi = c.getString(c.getColumnIndex("diachi"));
+
+
+                ds.add(new noitro(ids, ten, gia, diachi));
+
+
+            } while (c.moveToNext());
+
+
+            c.close();
+
+
+        }
+
+
+        return ds;
+
+
+
     }
 }
