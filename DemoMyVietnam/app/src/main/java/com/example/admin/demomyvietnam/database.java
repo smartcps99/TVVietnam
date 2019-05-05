@@ -338,4 +338,7 @@ public class database extends SQLiteOpenHelper {
         }
         return yeuthichlist;
     }
+    public void removeYeuThich(){
+        
+    }
 }
