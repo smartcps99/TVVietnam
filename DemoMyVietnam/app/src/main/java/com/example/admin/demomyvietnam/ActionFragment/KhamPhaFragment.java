@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.example.admin.demomyvietnam.R;
 import com.example.admin.demomyvietnam.Adapter.ThanhphoAdapter;
@@ -31,6 +32,7 @@ public class KhamPhaFragment extends Fragment implements TextWatcher {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getActivity(). getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         View view=inflater.inflate(R.layout.fragment_kham_pha, container, false);
         // Inflate the layout for this fragment
         recyclerView= view.findViewById(R.id.id_re_thanhpho);

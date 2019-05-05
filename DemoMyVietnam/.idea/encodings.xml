@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding" addBOMForNewFiles="with NO BOM" />
+  <component name="Encoding" addBOMForNewFiles="with NO BOM">
+    <file url="file://$USER_HOME$/Documents/AndroidStudio/DeviceExplorer/hmd_global-nokia_3_1-ES2BA80703001255/data/data/com.example.admin.demomyvietnam/databases/Mvietnam.db" charset="UTF-16" />
+  </component>
 </project>
